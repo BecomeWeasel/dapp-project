@@ -34,7 +34,6 @@ interface IRoomShare {
       uint amount
     );
 
-
     function getMyRents() external view returns(Rent[] memory); // msg.sender
 
     function getRoomRentHistory(uint _roomId) external view returns(Rent[] memory);
