@@ -327,15 +327,15 @@ const _rentRoom = async (roomId, currentYear, checkInDate, checkOutDate, price) 
     .rentRoom(roomId, currentYear, checkInDate, checkOutDate)
     .send({ from: user, gas: 3000000, value: totalPrice })
     .catch(err => {
-      if (err == "Error: Returned error: VM Exception while processing transaction: revert Room not available") {
-        // 룸 자체가 inactive일때
+      const err_str = err.toString();
+      if (err_str.includes("Room not available")) {
         alert("비활성화된 방입니다.");
-      } else if (err == "Error: Returned error: VM Exception while processing transaction: revert Room already rented") {
+      } else if (err_str.includes("Room already rented")) {
         alert("그날엔 이미 예약이 차 있습니다. ");
         _recommendDate(roomId, checkInDate, checkOutDate);
-      } else if (err == "Error: Returned error: VM Exception while processing transaction: revert Price not matched") {
+      } else if (err_str.includes("Price not matched")) {
         alert("돈이 제대로 입금되지 않았습니다");
-      } else if (err.toString().startsWith("Error: Returned error: sender doesn't have enough funds to send tx")) {
+      } else if (err_str.includes("enough")) {
         alert("결제하기에는 금액이 부족합니다.");
       }
 
@@ -417,7 +417,8 @@ const _markRoomAsInactive = async _roomId => {
       // 아마 여기서 권한 에러 뜨는거 처리 TODO
       console.error(err);
       console.log(err.data);
-      if (err == "Error: Returned error: VM Exception while processing transaction: revert request denied") {
+      const err_str = err.toString();
+      if (err_str.includes("request denied")) {
         alert(_roomId + " Inactive 실패. 방의 소유자만 Inactive 가능합니다");
       }
     });
@@ -447,7 +448,8 @@ const _initializeRoomShare = async _roomId => {
     })
     .catch(err => {
       console.error(err);
-      if (err == "Error: Returned error: VM Exception while processing transaction: revert request denied") {
+      const err_str = err.toString();
+      if (err_str.includes("request denied")) {
         alert(_roomId + " 초기화 실패. 방의 소유자만 초기화가 가능합니다");
       }
     });
