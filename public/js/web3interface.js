@@ -4,7 +4,7 @@ let user;
 const mEthPrice = 1600;
 const currentYear = 2022;
 
-const contract_address = "0xD95216f263Ed87C13853a80cb1cD34c697e6CCC5"; // 따옴표 안에 주소값 복사 붙여넣기
+const contract_address = "0x4147248382B8Dc4FB4269Ab7C57C24e3E2E38260"; // 따옴표 안에 주소값 복사 붙여넣기
 
 const logIn = async () => {
   const ID = prompt("choose your ID");
@@ -30,6 +30,8 @@ const json2abi = async path => {
   return abi;
 };
 
+let err_obj;
+
 const metamaskRequest = async () => {
   // metamask request
   if (window.ethereum != null) {
@@ -44,6 +46,7 @@ const metamaskRequest = async () => {
       alert("Access Denied");
     }
   }
+
   return web3;
 };
 
@@ -327,20 +330,10 @@ const _rentRoom = async (roomId, currentYear, checkInDate, checkOutDate, price) 
     .rentRoom(roomId, currentYear, checkInDate, checkOutDate)
     .send({ from: user, gas: 3000000, value: totalPrice })
     .catch(err => {
-      const err_str = err.toString();
-      if (err_str.includes("Room not available")) {
-        alert("비활성화된 방입니다.");
-      } else if (err_str.includes("Room already rented")) {
-        alert("그날엔 이미 예약이 차 있습니다. ");
-        _recommendDate(roomId, checkInDate, checkOutDate);
-      } else if (err_str.includes("Price not matched")) {
-        alert("돈이 제대로 입금되지 않았습니다");
-      } else if (err_str.includes("enough")) {
-        alert("결제하기에는 금액이 부족합니다.");
-      }
-
-      console.log(err);
+      _recommendDate(roomId, checkInDate, checkOutDate);
     });
+  //   console.log(err);
+  // });
 };
 
 const _recommendDate = async (roomId, checkInDate, checkOutDate) => {
@@ -418,9 +411,9 @@ const _markRoomAsInactive = async _roomId => {
       console.error(err);
       console.log(err.data);
       const err_str = err.toString();
-      if (err_str.includes("request denied")) {
-        alert(_roomId + " Inactive 실패. 방의 소유자만 Inactive 가능합니다");
-      }
+      //   if (err_str.includes("request denied")) {
+      alert(_roomId + " Inactive 실패. 방의 소유자만 Inactive 가능합니다");
+      //   }
     });
 };
 
@@ -449,9 +442,9 @@ const _initializeRoomShare = async _roomId => {
     .catch(err => {
       console.error(err);
       const err_str = err.toString();
-      if (err_str.includes("request denied")) {
-        alert(_roomId + " 초기화 실패. 방의 소유자만 초기화가 가능합니다");
-      }
+      //   if (err_str.includes("request denied")) {
+      alert(_roomId + " 초기화 실패. 방의 소유자만 초기화가 가능합니다");
+      //   }
     });
 };
 
